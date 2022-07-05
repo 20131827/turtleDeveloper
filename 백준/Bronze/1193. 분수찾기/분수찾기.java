@@ -32,6 +32,25 @@ public class Main {
             System.out.println((input - preNum) + "/" + ((t - 1) - (input - preNum)));
         else
             System.out.println(((t - 1) - (input - preNum)) + "/" + (input - preNum));
+	    
+	    /*        // 아주 간단하게 풀어낸 사람...!
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuffer sb = new StringBuffer();
+        int N = Integer.parseInt(br.readLine());
+        int count = 1;
+        while(N > count) {
+            N -= count++;
+        }
+        if(count % 2 == 0) {
+
+            sb.append(N).append("/").append(count+1 - N);
+
+        }else {
+
+            sb.append(count+1 - N).append("/").append(N);
+        }
+
+        System.out.print(sb.toString());*/
 
     }
 }
