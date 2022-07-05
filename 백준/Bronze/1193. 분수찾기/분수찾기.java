@@ -22,11 +22,9 @@ public class Main {
         int preNum = 0;
 
         while (input > num) {
+            preNum = num;
             num += (t - 1);
             t++;
-            if (input > num) {
-                preNum = num;
-            }
         }
         if ((t % 2) == 0)
             System.out.println((input - preNum) + "/" + ((t - 1) - (input - preNum)));
