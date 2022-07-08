@@ -55,74 +55,64 @@ public class Main {
 
     }
 
-/*    static int prime (int num){
+/*
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class Main {
+
+    static int prime (int num){
         if(num == 1){
             return 0;
         }
 
         for(int i = 2; i <= Math.sqrt(num); i++) {
             // 해당 for문의 경우 100을 입력 받았다면 100의 루트값(제곱근) 10 까지만 검사를 하면 되기 때문에 효율이 위보다 좋음!
-            if(num % i == 0) return 0;
+            if(num % i == 0) {
+                return 0;
+            }
         }
 
         // 위의 두 조건을 모두 통과하면 소수로 인정받을 수 있음
         return num;
     }
 
-
     public static void main(String[] args) throws IOException {
-   		*//*
-		백준 [2581] - 소수
-		[문제]
-        자연수 M과 N이 주어질 때 M이상 N이하의 자연수 중 소수인 것을 모두 골라 이들 소수의 합과 최솟값을 찾는 프로그램을 작성하시오.
-        예를 들어 M=60, N=100인 경우 60이상 100이하의 자연수 중 소수는 61, 67, 71, 73, 79, 83, 89, 97 총 8개가 있으므로, 이들 소수의 합은 620이고, 최솟값은 61이 된다.
-		[입력]
-        입력의 첫째 줄에 M이, 둘째 줄에 N이 주어진다. M과 N은 10,000이하의 자연수이며, M은 N보다 작거나 같다.
-		[출력]
-        M이상 N이하의 자연수 중 소수인 것을 모두 찾아 첫째 줄에 그 합을, 둘째 줄에 그 중 최솟값을 출력한다.
-        단, M이상 N이하의 자연수 중 소수가 없을 경우는 첫째 줄에 -1을 출력한다.
-		 *//*
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int a = Integer.parseInt(br.readLine());
         int b = Integer.parseInt(br.readLine());
-        boolean flag = b-a==0?false:true;
 
-        // 아래의 코드는 Wrapper Class로 분류되기 떄문에 초기값이 null을 갖게된다!
-//        Boolean []arr = new Boolean[b];
-
-        // 아래의 코드는 primitive type(기본 자료형)이기 때문에 초기값이 false를 갖게된다!
-//        boolean []arr = new boolean[b-a];
-
-        long[] arr = new long[flag?b - a:1];
+        int[] arr = new int[(b - a)+1];
         int index = 0;
-        for (int i = a; i < b; i++) {
+        for (int i = a; i <= b; i++) {
             if (prime(i) != 0) {
                 arr[index] = i;
             }
             index++;
         }
-//        System.out.println(Arrays.toString(arr));
 
-        long total = 0; // 소수들의 합을 구하기 위함
-        long min = 0; // 소수들의 최소값을 구하기 위함
-//        index--; // 배열의 크기를 넘어선 참조를 막기위해 -1을 해준다!
+        int total = 0; // 소수들의 합을 구하기 위함
+        int min = 0; // 소수들의 최소값을 구하기 위함
 
         index = arr.length == 1 ? 0 : arr.length - 1;
-        Arrays.sort(arr); // 배열을 오름차순으로 정렬해야 계산하기가 편하다!
-//        System.out.println(Arrays.toString(arr));
+        Arrays.sort(arr); // 배열을 오름차순으로 정렬해야 계산하기가 편하다! 시간복잡도도 더 좋아짐!
 
         while (arr[index] != 0) {
             total += arr[index];
             min = arr[index];
 
             index--;
+            if(index < 0)
+                break;
         }
-        if(total == 0)
-            System.out.println(-1);
-
-        else
+        if((total + min) != 0)
             System.out.println(total + "\n" + min);
-    }*/
+        else
+            System.out.println(-1);
+    }
+}
+*/
 }
