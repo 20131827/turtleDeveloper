@@ -1,39 +1,42 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N = Integer.parseInt(br.readLine());
-        int M = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
 
-        int[] arr = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        int arr [] = new int[n];
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int start = 0, end = 1, count = 0;
-
-        if (N == 1) {
-            System.out.println(1);
-        } else {
-            while (start != arr.length-1) {
-                if (arr[start] + arr[end] == M) {
-                    count++;
-                    if(end != arr.length-1)end++;
-                    else{
-                        start++;
-                        if(start != arr.length-1) end = start + 1;
-                    }
-                } else if (end != arr.length-1) {
-                    end++;
-                }
-                else {
-                    start++;
-                    if(start != arr.length-1) end = start + 1;
-                }
-            }
-            System.out.println(count);
+        for(int i = 0 ; i < n ; i++){
+            arr[i] = Integer.parseInt(st.nextToken());
         }
+
+        Arrays.sort(arr);
+
+        int count = 0;
+        int i = 0;
+        int j = arr.length-1;
+
+        while (i < j){
+            if(arr[i] + arr[j] < m){
+                i++;
+            }else if(arr[i] + arr[j] > m){
+                j--;
+            }else{
+                count++;
+                i++;
+                j--;
+            }
+        }
+
+        System.out.println(count);
+
     }
 }
