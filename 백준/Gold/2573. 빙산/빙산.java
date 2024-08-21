@@ -40,9 +40,8 @@ public class Main {
         int step = 0;
         while(!q.isEmpty()){
             copyMap = new int[n][m];
-
+            step++;
             int size = q.size();// 현재 단계의 큐 크기
-
             for (int a = 0; a < size; a++) {
                 int[] current = q.poll();
                 int cy = current[0];
@@ -60,15 +59,10 @@ public class Main {
                 if (copyMap[cy][cx] > 0) {
                     q.offer(new int[]{cy, cx});
                 }
-//                copyMap[cy][cx] -= minus;
-//                if (copyMap[cy][cx] <= 0) {
-//                    copyMap[cy][cx] = 0;
-//                } else {
-//                    q.offer(new int[]{cy, cx});
-//                }
-                
-            }step ++;
+            }
+
             map = copyMap;
+
             int ea = 0;
             visited = new boolean[n][m];
             for(int i = 0 ; i < n-1 ; i++){
