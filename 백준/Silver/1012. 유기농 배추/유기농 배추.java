@@ -1,71 +1,58 @@
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 public class Main {
-	static int dirX[] = {0, 0, -1, 1};
-	static int dirY[] = {-1, 1, 0, 0};
-	static int map[][];
-	static boolean visit[][];
+    static int dx[] = {0, 0, -1 ,1};
+    static int dy[] = {1, -1, 0, 0};
+    static int map[][];
+    static boolean visited[][];
 
-	static int now_x, now_y;
-	static int M, N, K;
-	static int count;
+    public static void main(String args[]) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
+        int n = Integer.parseInt(st.nextToken());
 
-		int T = Integer.parseInt(br.readLine());
-		for(int i=0; i<T; i++) {
-			st = new StringTokenizer(br.readLine());
+        for(int i = 0 ; i < n ; i++){
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            int temp = Integer.parseInt(st.nextToken());
 
-			M = Integer.parseInt(st.nextToken());
-			N = Integer.parseInt(st.nextToken());
-			K = Integer.parseInt(st.nextToken());
+            int result = 0;
 
-			map = new int[N][M];
-			visit = new boolean[N][M];
+            map = new int [y][x];
+            visited = new boolean [y][x];
 
-			for(int j=0; j<K; j++) {
-				st = new StringTokenizer(br.readLine());
-				int x = Integer.parseInt(st.nextToken());
-				int y = Integer.parseInt(st.nextToken());
-				map[y][x] = 1;
-			}
+            for(int j = 0 ; j < temp ; j++){
+                st = new StringTokenizer(br.readLine());
+                int xx = Integer.parseInt(st.nextToken());
+                int yy= Integer.parseInt(st.nextToken());
+                map[yy][xx] = 1;
+            }
 
-			count = 0;
-			for(int j=0; j<N; j++) {
-				for(int k=0; k<M; k++) {
+            for(int a = 0 ; a < x ; a ++){
+                for(int b = 0 ; b < y ; b++){
+                    if(!visited[b][a] && map[b][a] == 1){
+                        result++;
+                        dfs(b, a);
+                    }
+                }
+            }
 
-					if(map[j][k] == 1 && visit[j][k] == false) {
-						count++;
-						DFS(k, j);
-					}
-				}
-			}
-			sb.append(count).append('\n');
-		}
+            System.out.println(result);
+        }
+    }
 
-		System.out.println(sb);
-	} // End Main
-	
-	public static void DFS(int x, int y) {
-		visit[y][x] = true;
+    static void dfs(int y, int x){
+        visited[y][x] = true;
 
-		for(int i=0; i<4; i++) {
-			now_x = x + dirX[i];
-			now_y = y + dirY[i];
-
-			if(Range_check() && visit[now_y][now_x] == false && map[now_y][now_x] == 1) {
-				DFS(now_x, now_y);
-			}
-
-		}
-	}
-
-	static boolean Range_check() {
-		return (now_y < N && now_y >= 0 && now_x < M && now_x >= 0);
-	}
-
-} // End Class
+        for(int i = 0 ; i < 4 ; i++){
+            int my = y + dy[i];
+            int mx = x + dx[i];
+            // map[0].length -> 가로
+            if(my >= 0 &&  mx >= 0 && mx < map[0].length && my < map.length && !visited[my][mx] && map[my][mx] == 1){
+                dfs(my, mx);
+            }
+        }
+    }
+}
