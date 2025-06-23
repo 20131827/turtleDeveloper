@@ -2,47 +2,55 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int [][]map;
-    public static void main(String[] args) {
-        try{
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int P = Integer.parseInt(br.readLine());
+
+        for (int t = 0; t < P; t++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
+            int caseNum = Integer.parseInt(st.nextToken());
 
-            int n = Integer.parseInt(st.nextToken());
-            map = new int [n][20];
-
-            for(int i = 0 ; i < n ; i++){
-                st = new StringTokenizer(br.readLine());
-                st.nextToken();
-                for(int j = 0 ; j < 20 ; j++){
-                    map[i][j] = Integer.parseInt(st.nextToken());
-                }
+            int[] heights = new int[20];
+            for (int i = 0; i < 20; i++) {
+                heights[i] = Integer.parseInt(st.nextToken());
             }
 
-            for(int i = 0 ; i < n ; i++){
-                int result = 0;
-                for(int j = 0 ; j < 20 ; j++){
-                    result += swap(map, i, j);
+            List<Integer> line = new ArrayList<>();
+            int totalMoves = 0;
+
+            for (int i = 0; i < 20; i++) {
+                int cur = heights[i];
+                int insertPos = line.size(); // 기본은 맨 뒤
+
+                for (int j = 0; j < line.size(); j++) {
+                    if (line.get(j) > cur) {
+                        insertPos = j;
+                        break;
+                    }
                 }
-                System.out.println(i+1 + " " + result);
+
+                totalMoves += line.size() - insertPos;
+                line.add(insertPos, cur);
             }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-    public static int swap (int[][]arr, int a, int b){
-        int []a1 = arr[a];
-        int cNum = arr[a][b]; // 현재 숫자
 
-        int result = 0;
-        while (b !=0){
-            if(cNum > a1[b-1]) break;
-            b--;
-            map[a][b+1] = map[a][b];
-            map[a][b] = cNum;
-            result++;
+            System.out.println(caseNum + " " + totalMoves);
         }
-
-        return result;
     }
 }
+
+//✅ ArrayList vs 배열 비교
+//항목	ArrayList	배열
+//중간 삽입	add(index, value)로 간단히 삽입됨	수작업으로 요소들을 오른쪽으로 shift 해야 함
+//코드 가독성	매우 좋음	로직이 지저분해짐
+//성능 (이 문제 한정)	O(N²)이지만 N=20이므로 무시 가능	O(N²) 동일
+//유연성	추후 확장성 높음	고정 크기 / 조작 불편
+
+//🔍 실제로 왜 ArrayList가 적합한가?
+//line.add(insertPos, cur) 하나로 삽입 + 이동이 한꺼번에 처리됨
+//→ 따로 swap이나 shift 코드를 쓸 필요 없음
+
+//밀린 인원 수는 line.size() - insertPos로 바로 계산 가능
+//→ 추가 상태 변수 없이 처리
+
+//배열 기반 구현보다 코드가 짧고 명확함
+//→ 유지보수 / 디버깅이 쉬움
