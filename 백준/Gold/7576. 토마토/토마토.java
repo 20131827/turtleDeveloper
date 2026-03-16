@@ -2,67 +2,67 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
-    static int cnt = 0; // 익은토마토 개수
-    static int totalCnt = 0; // 총 토마토 개수
+    static int [] dy = {-1, 1, 0, 0};
+    static int [] dx = {0, 0, -1, 1};
+    static int n;
+    static int m;
+    static int[][] map;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int xSize = Integer.parseInt(st.nextToken());
-        int ySize = Integer.parseInt(st.nextToken());
 
-        int [][] arr = new int[ySize][xSize];
-        boolean [][] visited = new boolean[ySize][xSize];
+        m = Integer.parseInt(st.nextToken()); // x
+        n = Integer.parseInt(st.nextToken()); // y
+
+        map = new int[n][m];
+
         Queue<int[]> q = new LinkedList<>();
 
-        for(int i = 0 ; i < ySize ; i++){
+        for(int i = 0 ; i < n ; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j = 0 ; j < xSize ; j++){
-                int temp = Integer.parseInt(st.nextToken());
-                if(temp == 1){
-                    cnt++;
-                    totalCnt++;
-                    arr[i][j] = temp;
+            for(int j = 0 ; j < m ; j++){
+                map[i][j] = Integer.parseInt(st.nextToken());
+                if(map[i][j] == 1){
                     q.offer(new int[]{i, j});
-                    visited[i][j] = true;
-                }else if(temp == 0){
-                    totalCnt++;
-                    arr[i][j] = temp;
+                }
+            }
+        }
+
+        bfs(q);
+        int result = 0;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < m ; j++){
+                if(map[i][j] == 0){
+                    System.out.println(-1);
+                    return;
                 }else{
-                    arr[i][j] = temp;
-                    visited[i][j] = true;
+                    result = Math.max(result, map[i][j]);
                 }
             }
         }
 
-        if(cnt == totalCnt){
-            System.out.println(0);
-        }else{
-            while (!q.isEmpty()){
-                int [] temp = q.poll();
-                int cy = temp[0];
-                int cx = temp[1];
+        System.out.println(result-1);
 
-                for(int i = 0 ; i < 4 ; i++){
-                    int ny = cy + dy[i];
-                    int nx = cx + dx[i];
-                    if(ny >= 0 && ny < ySize && nx >= 0 && nx < xSize && !visited[ny][nx] && arr[ny][nx] == 0){
-                        visited[ny][nx] = true;
-                        q.offer(new int[]{ny, nx});
-                        arr[ny][nx] = arr[cy][cx] + 1;
-                        cnt++;
-                    }
-                }
+    }
 
-                if(cnt == totalCnt){
-                    System.out.println(arr[cy][cx]);
-                    break;
+    public static void bfs(Queue<int[]> q){
+
+        while(!q.isEmpty()){
+            int[] cur = q.poll();
+            int y = cur[0];
+            int x = cur[1];
+
+            for(int i = 0 ; i < 4 ; i++){
+                int ny = y + dy[i];
+                int nx = x + dx[i];
+
+                if(ny < 0 || nx < 0 || ny >= n || nx >= m) continue;
+                if(map[ny][nx] == 0){
+                    map[ny][nx] = map[y][x] + 1;
+                    q.offer(new int[]{ny, nx});
                 }
             }
         }
-        if(cnt != totalCnt){
-            System.out.println(-1);
-        }
+
     }
 }
