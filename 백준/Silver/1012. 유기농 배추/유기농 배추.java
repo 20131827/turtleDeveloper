@@ -1,58 +1,62 @@
 import java.io.*;
 import java.util.*;
+
 public class Main {
-    static int dx[] = {0, 0, -1 ,1};
-    static int dy[] = {1, -1, 0, 0};
-    static int map[][];
-    static boolean visited[][];
 
-    public static void main(String args[]) throws IOException{
+    static int w, h;
+    static boolean[][] visited;
+    static int[][] map;
+    static int result = 0;
+    static int [] dy = {-1, 1, 0, 0};
+    static int [] dx = {0, 0, -1, 1};
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int t = Integer.parseInt(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
+        for(int tc = 0 ; tc < t ; tc++){
+            result = 0;
 
-        for(int i = 0 ; i < n ; i++){
-            st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-            int temp = Integer.parseInt(st.nextToken());
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            w = Integer.parseInt(st.nextToken()); // x
+            h = Integer.parseInt(st.nextToken()); // y
+            int k = Integer.parseInt(st.nextToken()); // 배추의 위치
 
-            int result = 0;
+            visited = new boolean[h][w];
+            map = new int[h][w];
 
-            map = new int [y][x];
-            visited = new boolean [y][x];
-
-            for(int j = 0 ; j < temp ; j++){
+            for(int i = 0 ; i < k ; i ++){
                 st = new StringTokenizer(br.readLine());
-                int xx = Integer.parseInt(st.nextToken());
-                int yy= Integer.parseInt(st.nextToken());
-                map[yy][xx] = 1;
+                int a = Integer.parseInt(st.nextToken());
+                int b = Integer.parseInt(st.nextToken());
+                map[b][a] = 1;
             }
 
-            for(int a = 0 ; a < x ; a ++){
-                for(int b = 0 ; b < y ; b++){
-                    if(!visited[b][a] && map[b][a] == 1){
+            for(int i = 0 ; i < h ; i++){
+                for(int j = 0 ; j < w ; j++){
+                    if(map[i][j] == 1 && !visited[i][j]){
+                        dfs(i, j);
                         result++;
-                        dfs(b, a);
                     }
                 }
             }
 
             System.out.println(result);
+
         }
+
     }
 
-    static void dfs(int y, int x){
+    public static void dfs(int y, int x){
         visited[y][x] = true;
-
         for(int i = 0 ; i < 4 ; i++){
-            int my = y + dy[i];
-            int mx = x + dx[i];
-            // map[0].length -> 가로
-            if(my >= 0 &&  mx >= 0 && mx < map[0].length && my < map.length && !visited[my][mx] && map[my][mx] == 1){
-                dfs(my, mx);
-            }
+            int ny = dy[i] + y;
+            int nx = dx[i] + x;
+
+            if(ny < 0 || nx < 0 || ny >= h || nx >= w) continue;
+
+            if(!visited[ny][nx] && map[ny][nx] == 1) dfs(ny, nx);
         }
     }
+
 }
