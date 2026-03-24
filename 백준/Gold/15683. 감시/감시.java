@@ -2,41 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
-    static int n, m;
+    static int n,m;
     static int[][] map;
-    static int answer = Integer.MAX_VALUE;
+    static int result = Integer.MAX_VALUE;
 
-    static class CCTV {
-        int y, x, type;
-        CCTV(int y, int x, int type) {
+    static class CCTV{
+        int y,x,type;
+        CCTV(int y, int x, int type){
             this.y = y;
             this.x = x;
             this.type = type;
         }
     }
+    static ArrayList<CCTV> cList = new ArrayList<>();
 
-    static ArrayList<CCTV> list = new ArrayList<>();
-
-    // 상, 우, 하, 좌
-    static int[] dy = {-1, 0, 1, 0};
-    static int[] dx = {0, 1, 0, -1};
-
-    // CCTV별 방향 정의
+    static int[] dy = {-1,1,0,0};
+    static int[] dx = {0,0,-1,1};
     static int[][][] dir = {
             {},
-            {{0},{1},{2},{3}},                 // 1번
-            {{0,2},{1,3}},                     // 2번
-            {{0,1},{1,2},{2,3},{3,0}},         // 3번
-            {{0,1,2},{1,2,3},{2,3,0},{3,0,1}}, // 4번
-            {{0,1,2,3}}                        // 5번
+            {{0},{1},{2},{3}},
+            {{0,1},{2,3}},
+            {{0,3},{3,1},{1,2},{0,2}},
+            {{0,2,3},{0,1,3},{1,2,3},{0,1,2}},
+            {{0,1,2,3}}
     };
-
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         map = new int[n][m];
@@ -45,73 +37,71 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             for(int j = 0 ; j < m ; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
-
-                if(map[i][j] >= 1 && map[i][j] <= 5){
-                    list.add(new CCTV(i, j, map[i][j]));
+                if(1 <= map[i][j] && map[i][j] <= 5){
+                    cList.add(new CCTV(i, j, map[i][j]));
                 }
             }
         }
 
         dfs(0, map);
-        System.out.println(answer);
+        System.out.println(result);
+
     }
 
-    // CCTV 방향 선택
     public static void dfs(int depth, int[][] curMap){
-
-        if(depth == list.size()){
-            answer = Math.min(answer, getBlindSpot(curMap));
+        if(depth == cList.size()){
+//            for(int i = 0 ; i < n ; i++){
+//                System.out.println(Arrays.toString(curMap[i]));
+//            }
+            calc(curMap);
             return;
         }
 
-        CCTV c = list.get(depth);
+        CCTV c = cList.get(depth);
 
-        for(int[] dSet : dir[c.type]){
-            int[][] copyMap = copy(curMap);
+        for(int[]dset : dir[c.type]){
+            int[][]copyMap = new int[n][m];
 
-            for(int d : dSet){
-                watch(copyMap, c.y, c.x, d);
+            for(int i = 0 ; i < n ; i++){
+                copyMap[i] = curMap[i].clone();
+//                System.out.println(Arrays.toString(copyMap[i]));
             }
 
-            dfs(depth + 1, copyMap);
+            watch(c.y, c.x, dset, copyMap);
+
+            dfs(depth+1, copyMap);
+        }
+
+    }
+
+    public static void watch(int y, int x, int[] set, int[][]copyMap){
+
+        for(int d : set){
+            int ny = y;
+            int nx = x;
+            while(true){
+                ny += dy[d];
+                nx += dx[d];
+                if(ny < 0 || nx < 0 || ny >= n || nx >= m) break;
+                if(copyMap[ny][nx] == 6) break;
+
+                if(copyMap[ny][nx] == 0){
+                    copyMap[ny][nx] = -1;
+                }
+            }
         }
     }
 
-    // 감시 처리
-    public static void watch(int[][] map, int y, int x, int d){
-        int ny = y;
-        int nx = x;
-
-        while(true){
-            ny += dy[d];
-            nx += dx[d];
-
-            if(ny < 0 || nx < 0 || ny >= n || nx >= m) break;
-            if(map[ny][nx] == 6) break;
-
-            if(map[ny][nx] == 0){
-                map[ny][nx] = -1;
-            }
-        }
-    }
-
-    // 사각지대 계산
-    public static int getBlindSpot(int[][] map){
-        int count = 0;
+    public static void calc(int[][] curMap){
+        int sum = 0;
         for(int i = 0 ; i < n ; i++){
             for(int j = 0 ; j < m ; j++){
-                if(map[i][j] == 0) count++;
+                if(curMap[i][j] == 0){
+                    sum++;
+                }
             }
         }
-        return count;
+        result = Math.min(sum, result);
     }
 
-    // map 복사
-    public static int[][] copy(int[][] map){
-        int[][] newMap = new int[n][m];
-        for(int i = 0 ; i < n ; i++){
-            newMap[i] = map[i].clone();
-        }
-        return newMap;
-    }
 }
