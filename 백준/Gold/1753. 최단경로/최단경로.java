@@ -1,92 +1,86 @@
 import java.io.*;
 import java.util.*;
-
 public class Main {
-
-    static class Node implements Comparable<Node>{
-        int v; // 이동할 정점
-        int cost; // 시작점에서 해당 정점까지의 cost
-
-        Node(int v, int cost){
+    static class node implements Comparable <node>{
+        int v;
+        int cost;
+        node(int v, int cost){
             this.v = v;
             this.cost = cost;
         }
-
         @Override
-        public int compareTo(Node o){
+        public int compareTo(node o){
             return Integer.compare(this.cost, o.cost);
         }
     }
-
-    static int V,E;
-    static int K;
-    static ArrayList<Node>[] graph;
+    static ArrayList<node>[]graph;
+    static int k,n,e;
     static int[] dist;
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
 
-        V = Integer.parseInt(st.nextToken());
-        E = Integer.parseInt(st.nextToken());
-
-        graph = new ArrayList[V + 1]; // 정점의 수가 1부터기 때문에 + 1 함
-        dist = new int[V + 1]; // 정점의 수가 1부터기 때문에 + 1 함
-
-        for(int i = 1; i <= V; i++){ // 정점 생성
+        graph = new ArrayList[n+1];
+        for(int i = 1; i < n+1 ; i++){ // 정점이 1부터 시작하기 때문
             graph[i] = new ArrayList<>();
         }
 
-        Arrays.fill(dist, Integer.MAX_VALUE);   // dist에 최대값(무한)으로 모두 insert
-
         st = new StringTokenizer(br.readLine());
-        K = Integer.parseInt(st.nextToken()); // 시작점 K 입력
+        k = Integer.parseInt(st.nextToken());
 
-        for(int i = 0 ; i < E ; i++){ // u->v 방향 으로 가중치 w 간선 생성
+        for(int i = 0; i < e ; i++){
             st = new StringTokenizer(br.readLine());
-
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
-
-            graph[u].add(new Node(v, w));
+            int u = Integer.parseInt(st.nextToken()); // 출발
+            int v = Integer.parseInt(st.nextToken()); // 도착
+            int w = Integer.parseInt(st.nextToken()); // 가중치
+            graph[u].add(new node(v,w));
         }
 
-        dijkstra(K);
+        dist = new int[n+1]; // 시작점에서 i로 가는 최단거리를 저장하기 위한 배열(다익스트라 종료해야 최단거리고 돌고있는 중 이라면 최단거리를 보장할 수 없음)
+        Arrays.fill(dist, Integer.MAX_VALUE); // dist에 최대값(무한)으로 모두 insert
 
-        for (int i = 1; i < V + 1; i++) {
-            if (dist[i] == Integer.MAX_VALUE)
+        djikstra(k);
+
+        for(int i = 1 ; i < n+1 ; i++){
+            int result = dist[i];
+
+            if(result == Integer.MAX_VALUE){
                 System.out.println("INF");
-            else
-                System.out.println(dist[i]);
+            }else{
+                System.out.println(result);
+            }
         }
 
     }
 
-    static void dijkstra(int start){
-        PriorityQueue<Node> pq = new PriorityQueue<>();
+    public static void djikstra(int start){
+        PriorityQueue<node> pq = new PriorityQueue<>();
 
-        pq.add(new Node(start, 0));
-        dist[start] = 0; // 시작점은 cost가 0임
+        pq.offer(new node(start,0));
+        dist[start] = 0; // 시작점은 cost가 0
 
         while(!pq.isEmpty()){
-            Node cur = pq.poll();
+            node cur = pq.poll();
 
             int now = cur.v;
             int cost = cur.cost;
 
-            if(dist[now] < cost) continue; //dist는 초기화값이 MAX_VALUE로 되어있음. 따라서 now 정점으로 가는 cost중 가장 작은 값을 dist에 저장할때 최적화 하기위한 조건임
+            if(dist[now] < cost) continue; //dist는 초기화값이 MAX_VALUE로 되어있음. 따라서 now 정점으로 가는 cost중 가장 작은 값을 dist에 저장할때 최적화 하기위한 조건
 
-            for(Node next : graph[now]){
-                int nextCost = cost + next.cost; // 다음 cost = 현재 cost + 현재에서 다음으로 가는 cost
+            for(node n : graph[now]){ //현재위치에서 연결되어있는 모든 간선을 돌면서 계산
+                int nextCost = cost + n.cost; // 현재 정점까지의 cost + 연결된 다음 정점으로의 cost = 다음 정점 까지의 총 cost
 
-                if(nextCost < dist[next.v]){ // 현재까지 계산된 다음 정점의 cost 보다 현재정점에서 다음 정점으로 가는 cost를 구한게 더 작다면? dist값을 update 해줘야함
-                    dist[next.v] = nextCost;
-                    pq.add(new Node(next.v, nextCost));
+                if(nextCost < dist[n.v]){ // 지금 까지 계산되어있는 다음 정점으로의 cost와 방금 계산한 cost를 비교해서 기존 cost가 더 크다면? -> 방금계산한 cost가 더 최단거리 라는 뜻이기에, dist에 update 해준다
+                    dist[n.v] = nextCost;
+                    pq.add(new node(n.v, nextCost));
                 }
+
             }
+
         }
-        
+
     }
 
 }
